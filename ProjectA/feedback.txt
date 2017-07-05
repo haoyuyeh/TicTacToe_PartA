@@ -1,0 +1,203 @@
+============================================
+vis/result.rtx
+00:19:35_Thursday_07_April_2016
+============================================
+Feedback:
+	Your program ("TicTacToe.java") has been submitted successfully.
+
+	Compiling your program with "javac"...
+
+	Your program has been run successfully :-)
+
+	Now, it's your responsibility to test your program for correctness!
+	Here is a simple test case, and the results:
+
+============================================
+Test for input file: in1
+Expected results:				Your results:
+Welcome to Tic Tac Toe!				Welcome to Tic Tac Toe!
+
+Enter Player O's name:				Enter Player O's name:
+Enter Player X's name:				Enter Player X's name:
+ | | 						 | | 
+-----						-----
+ | | 						 | | 
+-----						-----
+ | | 						 | | 
+Rose's move:					Rose's move:
+ | | 						 | | 
+-----						-----
+ |O| 						 |O| 
+-----						-----
+ | | 						 | | 
+Jack's move:					Jack's move:
+ | | 						 | | 
+-----						-----
+ |O| 						 |O| 
+-----						-----
+ | |X						 | |X
+Rose's move:					Rose's move:
+ | | 						 | | 
+-----						-----
+ |O|O						 |O|O
+-----						-----
+ | |X						 | |X
+Jack's move:					Jack's move:
+ | | 						 | | 
+-----						-----
+ |O|O						 |O|O
+-----						-----
+ |X|X						 |X|X
+Rose's move:					Rose's move:
+ | | 						 | | 
+-----						-----
+O|O|O						O|O|O
+-----						-----
+ |X|X						 |X|X
+Game over. Rose won!				Game over. Rose won!
+
+Your results seem to be CORRECT :-).
+
+============================================
+src/TicTacToe.java
+00:19:32_Thursday_07_April_2016
+============================================
+/*
+ * Author: Hao Yu Yeh
+ * Date: 28/03/2016
+ * Comment: project A(TicTacToe game) in COMP90041
+ */
+
+import java.util.Scanner;
+
+public class TicTacToe {
+	private final static int GRIDNUM = 9, ROW = 3, COL = 3, OWIN = 0, XWIN = 1, CONTINUE = 2;
+	private char[][] chessBoard;
+	private String player1 = "", player2 = "";
+	private int row = 0, col = 0; 
+	private boolean winner = false;
+	
+	public TicTacToe(){
+		chessBoard = new char[ ROW ][ COL ];
+		for( int i = 0; i < ROW; i++ ){
+			for( int j = 0; j < COL; j++ ){
+				chessBoard[ i ][ j ] = ' ';
+			}
+		}
+	}
+	
+	public void setPlayer1( String name ){
+		player1 = name;
+	}
+	
+	public String getPlayer1(){
+		return player1;
+	}
+	
+	public void setPlayer2( String name ){
+		player2 = name;
+	}
+	
+	public String getPlayer2(){
+		return player2;
+	}
+	
+	public void run(){		
+		Scanner keyboard = new Scanner( System.in );
+		System.out.println( "Welcome to Tic Tac Toe!" );
+		System.out.println();
+		System.out.println( "Enter Player O's name:" );
+//		player1 = keyboard.next();
+		setPlayer1( keyboard.next() );
+		System.out.println( "Enter Player X's name:" );
+//		player2 = keyboard.next();
+		setPlayer2( keyboard.next() );
+		printGrid();		
+		// making movements 
+		int type = CONTINUE;
+		for( int i = 0; i < GRIDNUM; i++ ){
+			switch( type ){
+				case OWIN: 
+					System.out.println( "Game over. " + player1 + " won!" );
+					winner = true;
+					return;
+				case XWIN: 
+					System.out.println( "Game over. " + player2 + " won!" );
+					winner = true;
+					return;
+				default:
+				case CONTINUE: 
+					if( ( i % 2 ) == 0 ){ // player1's turn
+						System.out.println( player1 + "'s move:" );
+						row = keyboard.nextInt();
+						col = keyboard.nextInt();
+						chessBoard[row][col] = 'O';
+						type = getGameState();
+					}else{ // player2's turn
+						System.out.println( player2 + "'s move:" );
+						row = keyboard.nextInt();
+						col = keyboard.nextInt();
+						chessBoard[row][col] = 'X';
+						type = getGameState();
+					}
+					break;			
+			}					
+			printGrid();
+		}
+		if(!winner){ // no winner after using out all the movements
+			System.out.println( "Game over. It was a draw!" );
+		}
+		keyboard.close();
+	}
+	
+	private void printGrid(){ // print the chessboard
+		System.out.println( chessBoard[0][0] + "|" + chessBoard[0][1] + "|" + chessBoard[0][2] );
+		System.out.println( "-----" );
+		System.out.println( chessBoard[1][0] + "|" + chessBoard[1][1] + "|" + chessBoard[1][2] );
+		System.out.println( "-----" );
+		System.out.println( chessBoard[2][0] + "|" + chessBoard[2][1] + "|" + chessBoard[2][2] );
+	}
+	
+	private boolean checkWinner( char target ){
+		// 8 ways to win
+		if( chessBoard[1][1] == target ){
+			if( (chessBoard[0][0] == target && chessBoard[2][2] == target) || 
+				(chessBoard[0][2] == target && chessBoard[2][0] == target) || 
+				(chessBoard[0][1] == target && chessBoard[2][1] == target) || 
+				(chessBoard[1][0] == target && chessBoard[1][2] == target) ){
+				return true;
+			}
+		}
+		if( chessBoard[0][0] == target ){
+			if( (chessBoard[0][1] == target && chessBoard[0][2] == target) || 
+				(chessBoard[1][0] == target && chessBoard[2][0] == target) ){
+				return true;
+			}
+		}
+		if( chessBoard[2][2] == target ){
+			if( (chessBoard[1][2] == target && chessBoard[0][2] == target) || 
+				(chessBoard[2][1] == target && chessBoard[2][0] == target) ){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
+	
+	private int getGameState(){ 
+		if( checkWinner( 'O' ) ){
+			return OWIN;
+		}else if( checkWinner( 'X' ) ){
+			return XWIN;
+		}else{
+			return CONTINUE;
+		}
+	}
+	
+	public static void main(String[] args){
+		TicTacToe game = new TicTacToe();
+		game.run();
+	}
+}
